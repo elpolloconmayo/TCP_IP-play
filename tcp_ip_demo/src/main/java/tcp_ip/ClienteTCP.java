@@ -1,7 +1,8 @@
 package tcp_ip;
-
+import java.util.Scanner;
 import java.net.*;
 import java.io.*;
+
 
 public class ClienteTCP {
     public static void main(String[] args) {
@@ -44,7 +45,13 @@ public class ClienteTCP {
                 }
                 else if (input2.equals("1")) {
                     // send pdf using path
-                    String path = System.console().readLine("Escribe la ruta del archivo: ");
+                    // Ask the user to input the path enclosed in double quotes
+                    System.out.println("Escribe la ruta del archivo (enclose the path in double quotes): ");
+                    Scanner scanner = new Scanner(System.in);
+                    String path = scanner.nextLine();
+                    // Remove the double quotes from the file path
+                    path = path.substring(1, path.length()-1);
+                    path = path.replace(" ", "@@");
                     String message = input + " " + input2 + " " + path;
                     String response = sendString(message);
                     System.out.println(response);                    
