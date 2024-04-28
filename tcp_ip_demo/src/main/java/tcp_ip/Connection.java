@@ -16,6 +16,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.types.Binary;
 
 public class Connection {
@@ -106,12 +109,18 @@ public class Connection {
 
     
  
-    public String searchAllPdfsInDatabase() {
-        // This method should search for all PDFs in the database
-        // For now, it just returns a placeholder message
-        return "searchAllPdfsInDatabase method is not yet implemented.";
+    public String showAllPdfsInDatabase() {
+        MongoDatabase database = mongoClient.getDatabase("UDP");
+        MongoCollection<Document> collection = database.getCollection("pdfs");
+    
+        StringBuilder pdfFileNames = new StringBuilder();
+        for (Document document : collection.find()) {
+            String fileName = document.getString("fileName");
+            pdfFileNames.append(fileName).append("\n");
+        }
+    
+        return pdfFileNames.toString();
     }
-
 
 
 

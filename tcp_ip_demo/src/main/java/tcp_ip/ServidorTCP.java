@@ -87,7 +87,7 @@ class Conexion extends Thread {
                   else if(parts.length >= 2 && parts[0].equals("2") && parts[1].equals("3")) {
                       // Search for all PDFs in MongoDB database
                       Connection connection = Connection.getInstance();
-                      String pdfs = connection.searchAllPdfsInDatabase();
+                      String pdfs = connection.showAllPdfsInDatabase();
       
                       // Send the PDFs back to the client
                       salida.writeUTF(pdfs);
