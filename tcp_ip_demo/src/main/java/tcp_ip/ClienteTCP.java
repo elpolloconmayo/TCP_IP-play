@@ -7,7 +7,7 @@ public class ClienteTCP {
     public static void main(String[] args) {
         while (true) {
             // input
-            String menu = "\n\nSelecciona una opción\n1) Servicio de significado de una palabra basado en un diccionario  (BD)\n2) Servicio de bibliotecas de documentos en formato pdf.";
+            String menu = "\n\nSelecciona una opcion\n1) Servicio de significado de una palabra basado en un diccionario  (BD)\n2) Servicio de bibliotecas de documentos en formato pdf.";
             String input = System.console().readLine(menu + "\nEscribe 'exit' para salir\n");
             if (input.equals("exit")) {
                 break;
