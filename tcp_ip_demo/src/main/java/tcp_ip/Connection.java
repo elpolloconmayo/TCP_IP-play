@@ -14,6 +14,10 @@ import org.bson.types.Binary;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import org.bson.types.Binary;
+
 public class Connection {
     private static Connection instance = null;
     private MongoClient mongoClient;
@@ -75,7 +79,6 @@ public class Connection {
         MongoCollection<Document> collection = database.getCollection("pdfs");
 
         try {
-
             // Read the PDF file as a byte array
             File file = new File(filePath);
             byte[] pdfBytes = new byte[(int) file.length()];
@@ -83,11 +86,16 @@ public class Connection {
             fileInputStream.read(pdfBytes);
             fileInputStream.close();
 
+            // Extract the file name from the file path
+            String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+            System.out.println(fileName);
+
             // Create a Binary object from the byte array
             Binary pdfBinary = new Binary(pdfBytes);
 
-            // Create a new document and insert the PDF Binary
-            Document document = new Document("file", pdfBinary);
+            // Create a new document and insert the PDF Binary and the file name
+            Document document = new Document("fileName", fileName)
+                    .append("file", pdfBinary);
             collection.insertOne(document);
 
             System.out.println("PDF file inserted successfully!");
@@ -95,17 +103,40 @@ public class Connection {
             e.printStackTrace();
         }
     }
-    public String searchPdfInDatabase(String filePath) {
-        // This method should search for a PDF in the database using the provided file path
-        // For now, it just returns a placeholder message
-        return "searchPdfInDatabase method is not yet implemented.";
-    }
+
     
+ 
     public String searchAllPdfsInDatabase() {
         // This method should search for all PDFs in the database
         // For now, it just returns a placeholder message
         return "searchAllPdfsInDatabase method is not yet implemented.";
     }
+
+
+
+
+
+    public String searchPdfInDatabase(String fileName) {
+        MongoDatabase database = mongoClient.getDatabase("UDP");
+        MongoCollection<Document> collection = database.getCollection("pdfs");
+    
+        Document document = collection.find(Filters.eq("fileName", fileName)).first();
+        if (document != null) {
+            Binary pdfBinary = document.get("file", Binary.class);
+            byte[] pdfBytes = pdfBinary.getData();
+    
+            try (OutputStream outputStream = new FileOutputStream(fileName)) {
+                outputStream.write(pdfBytes);
+                return "PDF file downloaded successfully!";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Error occurred while downloading the PDF file.";
+            }
+        } else {
+            return "The PDF file was not found in the database.";
+        }
+    }
+    
 }
 
 
